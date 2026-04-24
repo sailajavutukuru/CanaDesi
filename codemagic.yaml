@@ -4,32 +4,19 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m2
     environment:
-      groups:
-        - ios_signing
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.svutukuru.canadesi
       vars:
         BUNDLE_ID: "com.svutukuru.canadesi"
       node: v18.17.0
     scripts:
       - name: Install dependencies
-        script: |
-          npm install
+        script: npm install
       - name: Generate iOS project
-        script: |
-          npx expo prebuild --platform ios --clean
-      - name: Set up code signing
-        script: |
-          keychain initialize
-          echo $CM_CERTIFICATE | base64 --decode > /tmp/cert.p12
-          keychain add-certificates --certificate /tmp/cert.p12 --certificate-password "$CM_CERTIFICATE_PASSWORD"
-          echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+        script: npx expo prebuild --platform ios --clean
       - name: Install CocoaPods
-        script: |
-          cd ios && pod install
-      - name: Apply provisioning profile
-        script: |
-          xcode-project use-profiles
+        script: cd ios && pod install
       - name: Build iOS
         script: |
           xcode-project build-ipa \
