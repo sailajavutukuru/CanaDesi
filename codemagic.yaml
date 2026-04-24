@@ -6,20 +6,23 @@ workflows:
     integrations:
       app_store_connect: codemagic
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.svutukuru.canadesi
+      groups:
+        - ios_signing
+      vars:
+        BUNDLE_ID: "com.svutukuru.canadesi"
       node: v18.17.0
     scripts:
       - name: Install dependencies
         script: |
           npm install
+      - name: Set up code signing
+        script: |
+          keychain initialize
+          certificate add --certificate "$CM_CERTIFICATE" --certificate-password "$CM_CERTIFICATE_PASSWORD"
+          profile add --profile "$CM_PROVISIONING_PROFILE"
       - name: Install CocoaPods
         script: |
           cd ios && pod install
-      - name: Set up code signing
-        script: |
-          xcode-project use-profiles
       - name: Build iOS
         script: |
           xcode-project build-ipa \
