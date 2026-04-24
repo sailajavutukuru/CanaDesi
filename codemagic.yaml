@@ -3,8 +3,6 @@ workflows:
     name: React Native iOS
     max_build_duration: 120
     instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: codemagic
     environment:
       groups:
         - ios_signing
@@ -30,7 +28,3 @@ workflows:
             --scheme "CanaDesi"
     artifacts:
       - build/ios/ipa/*.ipa
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
