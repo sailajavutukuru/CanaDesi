@@ -22,7 +22,6 @@ workflows:
           xcode-project build-ipa \
             --workspace "ios/CanaDesi.xcodeproj/project.xcworkspace" \
             --scheme "CanaDesi" \
-            --disable-xcpretty \
-            -v
+            --disable-xcpretty
     artifacts:
       - build/ios/ipa/*.ipa
