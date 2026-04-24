@@ -13,6 +13,9 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
+      - name: Generate iOS project
+        script: |
+          npx expo prebuild --platform ios --clean
       - name: Set up code signing
         script: |
           keychain initialize
@@ -26,8 +29,4 @@ workflows:
           cd ios && pod install
       - name: Build iOS
         script: |
-          xcode-project build-ipa \
-            --workspace "ios/CanaDesi.xcworkspace" \
-            --scheme "CanaDesi"
-    artifacts:
-      - build/ios/ipa/*.ipa
+          xcode-project
