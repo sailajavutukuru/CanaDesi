@@ -29,7 +29,7 @@ workflows:
           cd ios && pod install
       - name: Apply provisioning profile
         script: |
-          xcode-project use-profiles --workspace ios/CanaDesi.xcodeproj/project.xcworkspace
+          xcode-project use-profiles
       - name: Build iOS
         script: |
           xcode-project build-ipa \
