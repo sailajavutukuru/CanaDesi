@@ -27,10 +27,18 @@ workflows:
       - name: Install CocoaPods
         script: |
           cd ios && pod install
+      - name: Find workspace
+        script: |
+          ls ios/
+          find ios -name "*.xcworkspace" -type d
       - name: Build iOS
         script: |
+          WORKSPACE=$(find ios -name "*.xcworkspace" -type d | head -1)
+          SCHEME=$(find ios -name "*.xcodeproj" -type d | head -1 | xargs basename | sed 's/.xcodeproj//')
+          echo "Using workspace: $WORKSPACE"
+          echo "Using scheme: $SCHEME"
           xcode-project build-ipa \
-            --workspace "ios/canadesi-v2.xcworkspace" \
-            --scheme "canadesi-v2"
+            --workspace "$WORKSPACE" \
+            --scheme "$SCHEME"
     artifacts:
       - build/ios/ipa/*.ipa
