@@ -27,33 +27,13 @@ workflows:
       - name: Install CocoaPods
         script: |
           cd ios && pod install
-      - name: Create export options
+      - name: Apply provisioning profile
         script: |
-          cat > /Users/builder/export_options.plist << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>bundleID</key>
-            <string>com.svutukuru.canadesi</string>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>stripSwiftSymbols</key>
-            <true/>
-            <key>uploadBitcode</key>
-            <false/>
-            <key>uploadSymbols</key>
-            <true/>
-          </dict>
-          </plist>
-          EOF
+          xcode-project use-profiles --workspace ios/CanaDesi.xcodeproj/project.xcworkspace
       - name: Build iOS
         script: |
           xcode-project build-ipa \
             --workspace "ios/CanaDesi.xcodeproj/project.xcworkspace" \
-            --scheme "CanaDesi" \
-            --export-options-plist /Users/builder/export_options.plist
+            --scheme "CanaDesi"
     artifacts:
       - build/ios/ipa/*.ipa
