@@ -27,18 +27,33 @@ workflows:
       - name: Install CocoaPods
         script: |
           cd ios && pod install
-      - name: Find workspace
+      - name: Create export options
         script: |
-          ls ios/
-          find ios -name "*.xcworkspace" -type d
+          cat > /Users/builder/export_options.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>bundleID</key>
+            <string>com.svutukuru.canadesi</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>stripSwiftSymbols</key>
+            <true/>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          EOF
       - name: Build iOS
         script: |
-          WORKSPACE=$(find ios -name "*.xcworkspace" -type d | head -1)
-          SCHEME=$(find ios -name "*.xcodeproj" -type d | head -1 | xargs basename | sed 's/.xcodeproj//')
-          echo "Using workspace: $WORKSPACE"
-          echo "Using scheme: $SCHEME"
           xcode-project build-ipa \
-            --workspace "$WORKSPACE" \
-            --scheme "$SCHEME"
+            --workspace "ios/CanaDesi.xcodeproj/project.xcworkspace" \
+            --scheme "CanaDesi" \
+            --export-options-plist /Users/builder/export_options.plist
     artifacts:
       - build/ios/ipa/*.ipa
